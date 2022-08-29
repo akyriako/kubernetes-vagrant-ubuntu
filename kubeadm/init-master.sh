@@ -23,15 +23,11 @@ echo ">>> FIX KUBELET NODE IP"
 
 echo "Environment=\"KUBELET_EXTRA_ARGS=--node-ip=$MASTER_NODE_IP\"" | sudo tee -a /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
-echo ">>> DEPLOY POD NETWORK (FLANNEL) "
+echo ">>> DEPLOY POD NETWORK"
 
-# kubectl create -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+# envsubst < /vagrant/cni/calico/flannel.yml | kubectl apply -f -
 
-# curl -o canal.yml https://github.com/projectcalico/canal/blob/master/k8s-install/1.7/canal.yaml
-# sed -i.bak 's|"/opt/bin/flanneld",|"/opt/bin/flanneld", "--iface=enp0s8",|' canal.yml
-# kubectl create -f canal.yml
-
-kubectl create -f /vagrant/cni/flannel/kube-flannel.yml
+envsubst < /vagrant/cni/calico/calico.yaml | kubectl apply -f -
 
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
