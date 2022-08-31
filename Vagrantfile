@@ -1,6 +1,7 @@
 domain = "kubernetes.lab"
 control_plane_endpoint = "k8s-master." + domain + ":6443"
 pod_network_cidr = "10.244.0.0/16"
+pod_network_type = "calico" # choose between calico and flannel
 master_node_ip = "192.168.57.100"
 
 Vagrant.configure("2") do |config|
@@ -18,7 +19,7 @@ Vagrant.configure("2") do |config|
         echo "192.168.57.10$NODE_INDEX k8s-worker-$NODE_INDEX.$DOMAIN k8s-worker-$NODE_INDEX" >> /etc/hosts 
         SHELL
       end
-      master.vm.provision "shell", path:"kubeadm/init-master.sh", env: {"K8S_CONTROL_PLANE_ENDPOINT" => control_plane_endpoint, "K8S_POD_NETWORK_CIDR" => pod_network_cidr, "MASTER_NODE_IP" => master_node_ip}
+      master.vm.provision "shell", path:"kubeadm/init-master.sh", env: {"K8S_CONTROL_PLANE_ENDPOINT" => control_plane_endpoint, "K8S_POD_NETWORK_CIDR" => pod_network_cidr, $K8S_POD_NETWORK_TYPE => pod_network_type, "MASTER_NODE_IP" => master_node_ip}
     end
     (1..2).each do |nodeIndex|
       config.vm.define "worker-#{nodeIndex}" do |worker|
@@ -45,10 +46,7 @@ Vagrant.configure("2") do |config|
     config.vm.provider "virtualbox" do |vb|
       vb.memory = "3072"
       vb.cpus = "1"
-     # vb.customize ["modifyvm", :id, "--nic1", "natnetwork"]
-    #   vb.customize ["modifyvm", :id, "--nat-network1", "NatNetwork"] works
       vb.customize ["modifyvm", :id, "--nic1", "nat"]
-    #   vb.customize ["modifyvm", :id, "--nic3", "natnetwork", "--nat-network3", "VMNATCOMMON"]
     end
   end
 

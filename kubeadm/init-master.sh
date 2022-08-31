@@ -25,9 +25,12 @@ echo "Environment=\"KUBELET_EXTRA_ARGS=--node-ip=$MASTER_NODE_IP\"" | sudo tee -
 
 echo ">>> DEPLOY POD NETWORK"
 
-# envsubst < /vagrant/cni/calico/flannel.yml | kubectl apply -f -
-
-envsubst < /vagrant/cni/calico/calico.yaml | kubectl apply -f -
+if [[ $K8S_POD_NETWORK_TYPE eq "calico"]]
+then 
+  envsubst < /vagrant/cni/calico/calico.yaml | kubectl apply -f -
+else
+   envsubst < /vagrant/cni/calico/flannel.yml | kubectl apply -f -
+fi
 
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
