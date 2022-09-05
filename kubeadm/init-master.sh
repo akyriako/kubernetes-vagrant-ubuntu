@@ -23,13 +23,13 @@ echo ">>> FIX KUBELET NODE IP"
 
 echo "Environment=\"KUBELET_EXTRA_ARGS=--node-ip=$MASTER_NODE_IP\"" | sudo tee -a /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
-echo ">>> DEPLOY POD NETWORK"
-
-if [[ $K8S_POD_NETWORK_TYPE eq "calico"]]
+if [ "$K8S_POD_NETWORK_TYPE" == "calico" ]
 then 
+  echo ">>> DEPLOY POD NETWORK > CALICO"
   envsubst < /vagrant/cni/calico/calico.yaml | kubectl apply -f -
 else
-   envsubst < /vagrant/cni/calico/flannel.yml | kubectl apply -f -
+  echo ">>> DEPLOY POD NETWORK > FLANNEL"
+   envsubst < /vagrant/cni/flannel/flannel.yml | kubectl apply -f -
 fi
 
 sudo systemctl daemon-reload
