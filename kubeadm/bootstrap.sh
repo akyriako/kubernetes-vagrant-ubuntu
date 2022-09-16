@@ -18,7 +18,7 @@ sudo apt update
 
 echo ">>> INSTALL KUBE-* TOOLS"
 
-sudo apt-get install -y kubelet kubeadm kubectl kubernetes-cni
+sudo apt-get install -y kubelet=$VERSION kubeadm=$VERSION kubectl=$VERSION kubernetes-cni
 sudo apt-mark hold kubelet kubeadm kubectl
 
 echo ">>> KERNEL MODULES"
