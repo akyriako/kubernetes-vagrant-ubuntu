@@ -3,7 +3,7 @@ control_plane_endpoint = "k8s-master." + domain + ":6443"
 pod_network_cidr = "10.244.0.0/16"
 pod_network_type = "calico" # choose between calico and flannel
 master_node_ip = "192.168.57.100"
-version = "1.24.4-00"
+version = "1.26.0-00"
 
 Vagrant.configure("2") do |config|
     config.ssh.insert_key = false

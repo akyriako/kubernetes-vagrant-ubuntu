@@ -1,3 +1,4 @@
 .vagrant/
 
 init-worker.sh
+kubeadm/admin.conf
